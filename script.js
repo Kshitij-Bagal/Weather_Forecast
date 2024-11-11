@@ -4,7 +4,7 @@ let countryCities = {};
 let cityDataset = [];
 const apiKey = 'c06b3b46bff119811142645233081c47';
 const API_KEY = apiKey;
-
+const mainElement = document.querySelector('main');
 const searchBtn = document.getElementById('searchBtn');
 const cityInput = document.getElementById('cityInput');
 const weatherDetails = document.getElementById('weatherDetails');
@@ -102,27 +102,18 @@ function displayWeatherData(data) {
     console.log('No matching background found for current weather condition.');
   }
 
-  if (backgroundGif) {
-    document.body.style.backgroundImage = `url('./Resources/${backgroundGif}')`;
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundRepeat = 'no-repeat';
-    document.body.style.color = 'white'
-  }
+// Select the main element
 
-  // setWeatherBackground(data.weather[0].main);
-  // // Display weather icon
-  // const weatherIcon = document.createElement('img');
-  // weatherIcon.src = `http://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
-  // weatherInfo.appendChild(weatherIcon);
+// Check if the main element exists
+if (mainElement && backgroundGif) {
+  mainElement.style.backgroundImage = `url('./Resources/${backgroundGif}')`;
+  mainElement.style.backgroundSize = 'cover';
+  mainElement.style.backgroundRepeat = 'no-repeat';
+  mainElement.style.color = 'white';
 }
 
-// function setWeatherBackground(data) {
-//   // Check if data and data.weather exist and have expected properties!data || !data.weather ||
-//   if ( data.weather[0] === null ) {
-//     console.error('Weather data is missing or undefined.');
-//     return;
-//   }
-// }
+
+}
 
 // Update Recently Searched Cities
 let recentCities = JSON.parse(localStorage.getItem('recentCities')) || [];
@@ -131,7 +122,8 @@ function updateRecentCities(city) {
   if (!recentCities.includes(city)) {
     recentCities.push(city);
     if (recentCities.length > 5) {
-      recentCities.shift(); // Keep only the last 5 cities
+      recentCities.shift(); 
+      // Keep only the last 5 cities
     }
     localStorage.setItem('recentCities', JSON.stringify(recentCities));
     renderRecentCities();
@@ -170,58 +162,114 @@ function fetchExtendedForecast(city) {
 // Fetch Extended Forecast Data
 
 
-
+// Function to display the extended forecast
 function displayExtendedForecast(forecastData) {
-  // Clear any existing forecast content
-  forecastElement.innerHTML = '';
+  forecastElement.innerHTML = ''; // Clear any previous data
 
-  // Extract the dates for each forecast entry at 12:00:00
-  const filteredData = forecastData.filter(item => item.dt_txt.includes('12:00:00'));
+  forecastData.forEach((forecast, index) => {
+    // Limit the forecast data to show only a few entries (e.g., every 8th entry for daily forecasts over a 5-day period)
+    if (index % 8 === 0) {
+      const forecastCard = document.createElement('div');
+      forecastCard.classList.add('forecast-card', 'p-4', 'bg-white', 'rounded-lg', 'shadow-lg', 'text-center', 'max-w-xs');
 
-  // Create a container for the forecast elements
-  // const forecastContainer = document.createElement('div');
-  // forecastContainer.classList.add('forecast-container');
+      const forecastTime = new Date(forecast.dt * 1000).toLocaleDateString("en-US", {
+        weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric'
+      });
+      const temp = forecast.main.temp;
+      const icon = forecast.weather[0].icon;
+      const description = forecast.weather[0].description;
+      const wind_s= forecast.wind.speed;
+      const humidity= forecast.main.humidity;
 
-  // Loop through each forecast item to display the date, icon, temperature, wind speed, and humidity
-  filteredData.forEach(item => {
-    const forecastItem = document.createElement('div');
-    forecastItem.classList.add('forecast-item');
+      forecastCard.innerHTML = `
+        <p class="font-bold">${forecastTime}</p>
+        <img src="http://openweathermap.org/img/wn/${icon}.png" alt="${description}" class="mx-auto">
+        <p class="text-lg font-semibold">${temp} °C</p>
+        <p class="capitalize font-bold">${description}</p>
+        <p class="capitalize"> Wind Speed :${wind_s} °C</p>
+        <p class="capitalize">Humidity :${humidity}</p>
+      `;
 
-    // Add date
-    const date = document.createElement('h3');
-    date.textContent = item.dt_txt.split(' ')[0];
-    forecastItem.appendChild(date);
-
-    // Add weather icon
-    const icon = document.createElement('img');
-    icon.src = `http://openweathermap.org/img/wn/${item.weather[0].icon}.png`;
-    icon.alt = item.weather[0].description;
-    forecastItem.appendChild(icon);
-
-    // Add temperature
-    const temp = document.createElement('p');
-    temp.textContent = `Temp: ${item.main.temp}°C`;
-    forecastItem.appendChild(temp);
-
-    // Add wind speed
-    const wind = document.createElement('p');
-    wind.textContent = `Wind: ${item.wind.speed} m/s`;
-    forecastItem.appendChild(wind);
-
-    // Add humidity
-    const humidity = document.createElement('p');
-    humidity.textContent = `Humidity: ${item.main.humidity}%`;
-    forecastItem.appendChild(humidity);
-  forecastItem.style.width= '100px';
-    forecastElement.appendChild(forecastItem);
+      forecastElement.appendChild(forecastCard);
+    }
   });
-   
+}
+// Function to fetch weather data by coordinates
+function fetchWeatherDataByCoords(lat, lon) {
+  const apiURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
 
-
-  // Append the generated forecast container to the forecast element
-  // forecastElement.appendChild(forecastContainer);
+  fetch(apiURL)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Location not found');
+      }
+      return response.json();
+    })
+    .then(data => {
+      displayWeatherData(data);
+      fetchExtendedForecastByCoords(lat, lon);
+    })
+    .catch(error => {
+      alert(error.message);
+    });
 }
 
+// Function to fetch extended forecast by coordinates
+function fetchExtendedForecastByCoords(lat, lon) {
+  const forecastAPI = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
+
+  fetch(forecastAPI)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Unable to fetch extended forecast data');
+      }
+      return response.json();
+    })
+    .then(data => {
+      displayExtendedForecast(data.list);
+    })
+    .catch(error => {
+      console.error('Error fetching extended forecast:', error);
+    });
+}
+
+// Get user's location on page load
+window.onload = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        fetchWeatherDataByCoords(lat, lon);
+      },
+      (error) => {
+        console.error('Geolocation error:', error);
+      }
+    );
+  } else {
+    alert("Geolocation is not supported by this browser.");
+  }
+};
+
+// Button to manually get the current location
+const getLocationBtn = document.getElementById('getLocationBtn');
+getLocationBtn.addEventListener('click', () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        fetchWeatherDataByCoords(lat, lon);
+      },
+      (error) => {
+        alert("Unable to retrieve location. Please try again.");
+        console.error('Geolocation error:', error);
+      }
+    );
+  } else {
+    alert("Geolocation is not supported by this browser.");
+  }
+});
 
 
 
@@ -235,86 +283,6 @@ function displayExtendedForecast(forecastData) {
 
 
 
-// function displayExtendedForecast(forecastData) {
-//   // Clear any existing forecast content
-//   forecastElement.innerHTML = '';
-
-//   // Extract the dates for each forecast entry at 12:00:00
-//   const filteredData = forecastData.filter(item => item.dt_txt.includes('12:00:00'));
-
-//   // Create the table structure for the forecast
-//   const table = document.createElement('table');
-//   table.classList.add('forecast-table');
-
-//   // Create the header row with dates
-//   const headerRow = document.createElement('tr');
-//   headerRow.innerHTML = `<th>Parameter</th>`; // First cell for parameter title
-
-//   filteredData.forEach(item => {
-//     const dateCell = document.createElement('th');
-//     dateCell.textContent = item.dt_txt.split(' ')[0]; // Extract date only
-//     headerRow.appendChild(dateCell);
-//   });
-//   table.appendChild(headerRow);
-
-//   // Add each parameter row
-//   const parameters = [
-//     { label: 'Temperature', key: 'temp', unit: '°C' },
-//     { label: 'Wind Speed', key: 'speed', unit: 'm/s' },
-//     { label: 'Humidity', key: 'humidity', unit: '%' }
-//   ];
-
-//   parameters.forEach(param => {
-//     const row = document.createElement('tr');
-//     const titleCell = document.createElement('td');
-//     titleCell.textContent = param.label;
-//     row.appendChild(titleCell);
-
-//     // Add data for each date in this parameter row
-//     filteredData.forEach(item => {
-//       const dataCell = document.createElement('td');
-//       const value = param.key === 'temp' ? item.main[param.key] : item.wind[param.key] || item.main[param.key];
-//       dataCell.textContent = `${value} ${param.unit}`;
-//       row.appendChild(dataCell);
-//     });
-
-//     table.appendChild(row);
-//   });
-
-//   // Append the generated table to the forecast container
-//   forecastElement.appendChild(table);
-// }
 
 
 
-
-
-// function fetchExtendedForecast(city) {
-//   const forecastAPI = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric`;
-
-//   fetch(forecastAPI)
-//     .then(response => response.json())
-//     .then(data => {
-//       displayExtendedForecast(data.list);
-//     })
-//     .catch(error => {
-//       console.error('Error fetching extended forecast:', error);
-//     });
-// }
-
-// // Display Extended Forecast
-// function displayExtendedForecast(forecastData) {
-//   forecastElement.innerHTML = ''; // Clear previous forecast
-
-//   forecastData.filter(item => item.dt_txt.includes('12:00:00')).forEach(item => {
-//     const card = document.createElement('div');
-//     card.innerHTML = `
-//       <h3>${item.dt_txt.split(' ')[0]}</h3>
-//       <img src="http://openweathermap.org/img/wn/${item.weather[0].icon}.png" alt="${item.weather[0].description}">
-//       <p>Temp: ${item.main.temp}°C</p>
-//       <p>Wind: ${item.wind.speed} m/s</p>
-//       <p>Humidity: ${item.main.humidity}%</p>
-//     `;
-//     forecastElement.appendChild(card);
-//   });
-// }
