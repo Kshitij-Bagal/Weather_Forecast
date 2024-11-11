@@ -55,6 +55,45 @@ function fetchWeatherData(city) {
     });
 }
 
+
+// Get user's location on page load
+window.onload = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        fetchWeatherDataByCoords(lat, lon);
+      },
+      (error) => {
+        console.error('Geolocation error:', error);
+      }
+    );
+  } else {
+    alert("Geolocation is not supported by this browser.");
+  }
+};
+
+// Button to manually get the current location
+const getLocationBtn = document.getElementById('getLocationBtn');
+getLocationBtn.addEventListener('click', () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        fetchWeatherDataByCoords(lat, lon);
+      },
+      (error) => {
+        alert("Unable to retrieve location. Please try again.");
+        console.error('Geolocation error:', error);
+      }
+    );
+  } else {
+    alert("Geolocation is not supported by this browser.");
+  }
+});
+
 // Display Weather Data
 function displayWeatherData(data) {
   document.getElementById('cityName').textContent = data.name;
@@ -101,23 +140,16 @@ function displayWeatherData(data) {
   } else {
     console.log('No matching background found for current weather condition.');
   }
-
-// Select the main element
-
-// Check if the main element exists
-if (mainElement && backgroundGif) {
-  mainElement.style.backgroundImage = `url('./Resources/${backgroundGif}')`;
-  mainElement.style.backgroundSize = 'cover';
-  mainElement.style.backgroundRepeat = 'no-repeat';
-  mainElement.style.color = 'white';
-}
-
-
+  if (mainElement && backgroundGif) {
+    mainElement.style.backgroundImage = `url('./Resources/${backgroundGif}')`;
+    mainElement.style.backgroundSize = 'cover';
+    mainElement.style.backgroundRepeat = 'no-repeat';
+    mainElement.style.color = 'white';
+  }
 }
 
 // Update Recently Searched Cities
 let recentCities = JSON.parse(localStorage.getItem('recentCities')) || [];
-
 function updateRecentCities(city) {
   if (!recentCities.includes(city)) {
     recentCities.push(city);
@@ -161,40 +193,6 @@ function fetchExtendedForecast(city) {
 }
 // Fetch Extended Forecast Data
 
-
-// Function to display the extended forecast
-function displayExtendedForecast(forecastData) {
-  forecastElement.innerHTML = ''; // Clear any previous data
-
-  forecastData.forEach((forecast, index) => {
-    // Limit the forecast data to show only a few entries (e.g., every 8th entry for daily forecasts over a 5-day period)
-    if (index % 8 === 0) {
-      const forecastCard = document.createElement('div');
-      forecastCard.classList.add('forecast-card', 'p-4', 'bg-white', 'rounded-lg', 'shadow-lg', 'text-center', 'max-w-xs');
-
-      const forecastTime = new Date(forecast.dt * 1000).toLocaleDateString("en-US", {
-        weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric'
-      });
-      const temp = forecast.main.temp;
-      const icon = forecast.weather[0].icon;
-      const description = forecast.weather[0].description;
-      const wind_s= forecast.wind.speed;
-      const humidity= forecast.main.humidity;
-
-      forecastCard.innerHTML = `
-        <p class="font-bold">${forecastTime}</p>
-        <img src="http://openweathermap.org/img/wn/${icon}.png" alt="${description}" class="mx-auto">
-        <p class="text-lg font-semibold">${temp} °C</p>
-        <p class="capitalize font-bold">${description}</p>
-        <p class="capitalize"> Wind Speed :${wind_s} °C</p>
-        <p class="capitalize">Humidity :${humidity}</p>
-      `;
-
-      forecastElement.appendChild(forecastCard);
-    }
-  });
-}
-// Function to fetch weather data by coordinates
 function fetchWeatherDataByCoords(lat, lon) {
   const apiURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
 
@@ -233,43 +231,38 @@ function fetchExtendedForecastByCoords(lat, lon) {
     });
 }
 
-// Get user's location on page load
-window.onload = () => {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        fetchWeatherDataByCoords(lat, lon);
-      },
-      (error) => {
-        console.error('Geolocation error:', error);
-      }
-    );
-  } else {
-    alert("Geolocation is not supported by this browser.");
-  }
-};
+// Function to display the extended forecast
+function displayExtendedForecast(forecastData) { 
+  forecastElement.innerHTML = ''; // Clear any previous data
 
-// Button to manually get the current location
-const getLocationBtn = document.getElementById('getLocationBtn');
-getLocationBtn.addEventListener('click', () => {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        fetchWeatherDataByCoords(lat, lon);
-      },
-      (error) => {
-        alert("Unable to retrieve location. Please try again.");
-        console.error('Geolocation error:', error);
-      }
-    );
-  } else {
-    alert("Geolocation is not supported by this browser.");
-  }
-});
+  forecastData.forEach((forecast, index) => {
+    if (index % 8 === 0) {
+      const forecastCard = document.createElement('div');
+      forecastCard.classList.add('forecast-card', 'p-4', 'bg-grey-100', 'rounded-lg', 'shadow-lg', 'text-center', 'max-w-xs', 'transform', 'transition-transform', 'duration-200', 'hover:-translate-y-1');
+
+      const forecastTime = new Date(forecast.dt * 1000).toLocaleDateString("en-US", {
+        weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric'
+      });
+      const temp = forecast.main.temp;
+      const icon = forecast.weather[0].icon;
+      const description = forecast.weather[0].description;
+      const wind_s= forecast.wind.speed;
+      const humidity= forecast.main.humidity;
+
+      forecastCard.innerHTML = `
+        <p class="font-bold text-gray-900">${forecastTime}</p>
+        <img src="http://openweathermap.org/img/wn/${icon}.png" alt="${description}" class="mx-auto my-2 w-12 h-12">
+        <p class="text-xl font-semibold text-blue-500">${temp} °C</p>
+        <p class="capitalize font-bold text-gray-700">${description}</p>
+        <p class="capitalize text-sm text-gray-600">Wind Speed: ${wind_s} m/s</p>
+        <p class="capitalize text-sm text-gray-600">Humidity: ${humidity}%</p>
+      `;
+
+      forecastElement.appendChild(forecastCard);
+    }
+  });
+}
+// Function to fetch weather data by coordinates
 
 
 

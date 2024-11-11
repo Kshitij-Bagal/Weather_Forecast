@@ -313,3 +313,55 @@
 
 
 
+
+    <header>
+        <img src="Resources/KB-DEV-Icon.PNG" alt="Icon">
+        <div>
+            <h1>KB Learning <br> Hub</h1>
+        </div> 
+    </header>
+
+
+header {
+    display: flex;
+    text-align: center;
+    margin-bottom: 40px;
+    padding-top: 20px;
+    background-color: #000000;
+    color: white;
+    width: 100%;
+    justify-content: space-evenly;
+}
+img{
+    width: 150px;
+}
+
+h1 {
+    font-size: clamp(3em, calc(3em + 3px), 3vw);
+    margin: 0;
+}
+
+@media screen and (max-width: 768px) {
+    header h1 {
+        font-size: 58px;
+    }
+}
+
+@media screen and (max-width: 390px) {
+      header {
+        flex-direction: row;
+        align-items: center;
+        padding-top: 15px;
+    }
+
+    header h1 {
+        font-size: 50px;
+        text-align: center;
+    }
+}
+
+
+
+
+
+

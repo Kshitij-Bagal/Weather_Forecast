@@ -9,9 +9,15 @@
     <link rel="stylesheet" href="dist/output.css">
 
 </head>
-<body class="font-sans mx-5 my-5">
+<header class="flex items-center justify-evenly text-center  pt-5 bg-black text-white w-full">
+  <img src="Resources/KB-DEV-Icon.PNG" alt="Icon" class="w-36">
+  <div>
+      <h1 class="text-3xl sm:text-[58px] md:text-[clamp(3em,calc(3em+3px),3vw)] m-0 leading-tight">        <h1>KB Weather <br> Services</h1>
+    </div> 
+</header>
+
   <main>
-    <h1 class="text-center text-2xl font-bold mb-5">Select a City to See the Weather</h1>
+    <h1 class="text-center text-2xl font-bold pt-5 mb-1">Select a City to See the Weather</h1>
     <div class="container mx-auto p-4">
         <!-- Search Area -->
         <div class="search_area flex flex-col items-center">
@@ -27,7 +33,7 @@
 
         <!-- Weather Info -->
         <div id="weatherInfo" class="mt-8 text-center">
-            <span id="cityName" class="text-3xl font-bold"></span><img id="weatherIcon" alt="Weather icon">
+            <span id="cityName" class="text-3xl font-bold"></span><img id="weatherIcon" class="inline w-20 h-20" alt="Weather icon">
             <div id="weatherDetails" class="flex flex-wrap justify-around gap-8 mt-6">
                 <!-- Temperature Card style="background: rgba(255, 255, 255, 0.055);"-->
                 <div class="data_item relative flex flex-col items-center max-w-xs w-full rounded-lg shadow-lg p-6 bg-white bg-opacity-10">
@@ -91,10 +97,13 @@
         </div>
 </main>
         <!-- Extended Forecast -->
-        <div id="forecast" class="mt-8 flex  gap-8">
-            <!-- Forecast will be displayed here -->
+        <div id="forecast_section" class="mt-7 text-gray-800">
+          <h3 class="text-2xl font-bold mb-5 mt-10 text-center">5-Day Weather Forecast</h3>
+          <div id="forecast" class="flex flex-wrap gap-8 justify-center">
+            <!-- Forecast cards will be appended here -->
+          </div>
         </div>
-    </div>
+        
 
     <script src="script.js"></script>
 </body>
