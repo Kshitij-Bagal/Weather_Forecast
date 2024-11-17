@@ -1,3 +1,4 @@
+// script.js
 let map;
 let cityMarker = null;
 let countryCities = {};
@@ -16,16 +17,31 @@ weatherDetails.style.backgroundRepeat = 'no-repeat'
 forecastElement.style.display = 'flex';
 forecastElement.style.flexDirection = 'row';
 
-// Handle Search Button Click
-searchBtn.addEventListener('click', () => {
-  const city = cityInput.value.trim();
-  if (city) {
-    fetchWeatherData(city);
-  } else {
-    alert('Please enter a valid city!');
-  }
-});
 
+function validateCityName(city) {
+  // Regular expression for city names (letters, spaces, hyphens, and apostrophes)
+  const cityNameRegex = /^[a-zA-Z\s'-]+$/;
+
+  // Check if the city matches the pattern
+  if (cityNameRegex.test(city)) {
+    return true; // Valid city name
+  } else {
+    alert('Invalid city name! Please enter a valid name (letters, spaces or apostrophes only).');
+    return false; // Invalid city name
+  }
+}
+
+// Event listener for search button
+searchBtn.addEventListener('click', () => {
+  const cityInputValue = cityInput.value.trim();
+
+  if (!validateCityName(cityInputValue)) {
+    return; // Stop further execution for invalid names
+  }
+
+  // Proceed with fetching weather data
+  fetchWeatherData(cityInputValue);
+});
 // Handle Search from Recently Searched Cities
 recentCitiesDropdown.addEventListener('change', (e) => {
   const selectedCity = e.target.value;
@@ -41,7 +57,7 @@ function fetchWeatherData(city) {
   fetch(apiURL)
     .then(response => {
       if (!response.ok) {
-        throw new Error('City not found');
+        throw new Error('City not found. If the city name includes a hyphen, try replacing it with a space.');
       }
       return response.json();
     })
@@ -262,8 +278,6 @@ function displayExtendedForecast(forecastData) {
     }
   });
 }
-// Function to fetch weather data by coordinates
-
 
 
 

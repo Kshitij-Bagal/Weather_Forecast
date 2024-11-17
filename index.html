@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,8 +10,8 @@
     <link rel="stylesheet" href="dist/output.css">
 
 </head>
-<header class="flex items-center justify-evenly text-center  pt-5 bg-black text-white w-full">
-  <img src="Resources/KB-DEV-Icon.PNG" alt="Icon" class="w-36">
+<header class="flex items-center justify-evenly text-center  pt-0.5 bg-black text-white w-full">
+  <img src="Resources/KB-DEV-Icon.PNG" alt="Icon" class="w-28">
   <div>
       <h1 class="text-3xl sm:text-[58px] md:text-[clamp(3em,calc(3em+3px),3vw)] m-0 leading-tight">        <h1>KB Weather <br> Services</h1>
     </div> 
@@ -38,7 +39,7 @@
                 <!-- Temperature Card style="background: rgba(255, 255, 255, 0.055);"-->
                 <div class="data_item relative flex flex-col items-center max-w-xs w-full rounded-lg shadow-lg p-6 bg-white bg-opacity-10">
                   <div class="data_title z-10">
-                        <h3 class="text-black 900 text-center text-xl font-semibold">Temperature</h3>
+                        <h3 class="weather_title text-black 900 text-center text-xl font-semibold">Temperature</h3>
                    </div>
                    <div class="data_details z-10 w-full mt-4 p-4 rounded-lg bg-gray-100 shadow-inner">
                       <p class="text-black 900" id="minTemp">Min Temperature:</p>
@@ -50,7 +51,7 @@
                 <!-- Pressure Card -->
                 <div class="data_item relative flex flex-col items-center max-w-xs w-full rounded-lg shadow-lg p-6 bg-white bg-opacity-10">
                   <div class="data_title z-10">
-                        <h3 class="text-black 900 text-center text-xl font-semibold">Pressure</h3>
+                        <h3 class="weather_title text-black 900 text-center text-xl font-semibold">Pressure</h3>
                     </div>
                     <div class="data_details z-10 w-full mt-4 p-4 rounded-lg bg-gray-100 shadow-inner">
                         <p class="text-black 900" id="pressure">Pressure:</p>
@@ -62,7 +63,7 @@
                 <!-- Wind Card -->
                 <div class="data_item relative flex flex-col items-center max-w-xs w-full rounded-lg shadow-lg p-6 bg-white bg-opacity-10">
                   <div class="data_title z-10">
-                        <h3 class="text-black 900 text-center text-xl font-semibold">Wind</h3>
+                        <h3 class="weather_title text-black 900 text-center text-xl font-semibold">Wind</h3>
                     </div>
                     <div class="data_details z-10 w-full mt-4 p-4 rounded-lg bg-gray-100 shadow-inner">
                         <p class="text-black 900" id="windDirection">Wind Direction:</p>
@@ -74,7 +75,7 @@
                 <!-- Location Card -->
                 <div class="data_item relative flex flex-col items-center max-w-xs w-full rounded-lg shadow-lg p-6 bg-white bg-opacity-10">
                   <div class="data_title z-10">
-                        <h3 class="text-black 900 text-center text-xl font-semibold">Location</h3>
+                        <h3 class="weather_title text-black 900 text-center text-xl font-semibold">Location</h3>
                     </div>
                     <div class="data_details z-10 w-full mt-4 p-4 rounded-lg bg-gray-100 shadow-inner">
                         <p class="text-black 900" id="country">Country:</p>
@@ -86,7 +87,7 @@
                 <!-- Daylength Card -->
                 <div class="data_item relative flex flex-col items-center max-w-xs w-full rounded-lg shadow-lg p-6 bg-white bg-opacity-10">
                   <div class="data_title z-10">
-                        <h3 class="text-black 900 text-center text-xl font-semibold">Daylength</h3>
+                        <h3 class="weather_title text-black 900 text-center text-xl font-semibold">Daylength</h3>
                     </div>
                     <div class="data_details z-10 w-full mt-4 p-4 rounded-lg bg-gray-100 shadow-inner">
                         <p class="text-black 900"  id="sunrise">Sunrise:</p>
@@ -98,7 +99,7 @@
 </main>
         <!-- Extended Forecast -->
         <div id="forecast_section" class="mt-7 text-gray-800">
-          <h3 class="text-2xl font-bold mb-5 mt-10 text-center">5-Day Weather Forecast</h3>
+          <h2 class="text-2xl font-bold mb-5 mt-10 text-center">5-Day Weather Forecast</h2>
           <div id="forecast" class="flex flex-wrap gap-8 justify-center">
             <!-- Forecast cards will be appended here -->
           </div>
@@ -112,7 +113,7 @@
     <div class="flex flex-col md:flex-row justify-evenly items-center space-y-4 md:space-y-0">
       <!-- About Section -->
       <div>
-        <h3 class="text-xl font-semibold mb-2">About KB Weather Services</h3>
+        <h2 class="text-xl font-semibold mb-2">About KB Weather Services</h2>
         <p class="text-gray-400 max-w-xs mx-auto md:max-w-sm">
           KB Weather Services provides accurate, real-time weather information
           for cities around the world. Stay updated on the latest weather forecasts!
